@@ -1,7 +1,7 @@
 {
   "name": "devpulse",
   "productName": "DevPulse",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Developer desktop companion: manage ports, kill processes and monitor PC performance.",
   "main": "electron/main.cjs",
   "author": "Zied",

@@ -65,6 +65,8 @@ export default function Settings() {
           <Shortcut keys={['Ctrl', '1']} label="Dashboard" />
           <Shortcut keys={['Ctrl', '2']} label="Ports" />
           <Shortcut keys={['Ctrl', '3']} label="Processes" />
+          <Shortcut keys={['Ctrl', '4']} label="Security" />
+          <Shortcut keys={['Ctrl', '5']} label="Optimize" />
           <Shortcut keys={['Ctrl', 'F']} label="Search on the current page" />
           <Shortcut keys={['Ctrl', ',']} label="Settings" />
         </div>

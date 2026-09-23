@@ -201,7 +201,7 @@ async function sampleProcesses() {
   const gpuProcs = lastGpu.procs || {};
   procCache = out.map((p) => {
     const d = detailCache.get(p.pid) || {};
-    return { ...p, path: d.path, desc: d.desc, company: d.company, start: d.start, gpu: Math.min(100, gpuProcs[p.pid] || 0), critical: isCritical(p.pid, p.name) };
+    return { ...p, path: d.path, desc: d.desc, company: d.company, start: d.start, gpu: Math.min(100, gpuProcs[p.pid] || 0), critical: isCritical(p.pid, p.name, d.path) };
   });
   return procCache;
 }
@@ -299,7 +299,7 @@ $s = Get-CimInstance Win32_Service -Filter '${psEscape(filter)}' | ForEach-Objec
         cpu: p.cpu || 0,
         tech: det,
         scope: local ? 'local' : 'network',
-        critical: isCritical(e.pid, name),
+        critical: isCritical(e.pid, name, p.path || extra.exe),
       };
     })
     .sort((a, b) => a.port - b.port || a.proto.localeCompare(b.proto));
@@ -310,7 +310,7 @@ $s = Get-CimInstance Win32_Service -Filter '${psEscape(filter)}' | ForEach-Objec
 async function killPid(pid, { tree = true } = {}) {
   pid = Number(pid);
   const p = procCache.find((x) => x.pid === pid);
-  if (!pid || isCritical(pid, p?.name)) {
+  if (!pid || isCritical(pid, p?.name, p?.path)) {
     return { ok: false, pid, error: `${p?.name || 'This process'} is a critical Windows process and is protected.` };
   }
   const args = ['/PID', String(pid), '/F'];

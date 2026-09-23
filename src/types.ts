@@ -80,6 +80,85 @@ export interface DrivesInfo { drives: Drive[]; battery: { percent: number; charg
 export interface KillResult { ok: boolean; pid: number; error?: string; needsAdmin?: boolean; message?: string }
 export interface KillPortResult { ok: boolean; port: number; error?: string; needsAdmin?: boolean; results: KillResult[] }
 
+export type RiskLevel = 'high' | 'medium' | 'low' | 'ok';
+export interface Reason { text: string; kind?: string; pts: number }
+
+export interface Finding {
+  pid: number;
+  pids: number[];
+  name: string;
+  path: string | null;
+  cmd: string;
+  ppid: number;
+  parent: string | null;
+  signer: string | null;
+  signature: string;
+  cpu: number;
+  mem: number;
+  connections: { ip: string; port: number }[];
+  score: number;
+  level: Exclude<RiskLevel, 'ok'>;
+  reasons: Reason[];
+}
+
+export interface StartupItem {
+  name: string;
+  command: string;
+  location: string;
+  user: string;
+  path: string | null;
+  signer: string | null;
+  signature: string;
+  score: number;
+  level: RiskLevel;
+  reasons: Reason[];
+}
+
+export interface DefenderInfo {
+  available: boolean;
+  mode?: string;
+  realtime?: boolean;
+  antivirus?: boolean;
+  tamper?: boolean;
+  sigUpdated?: string | null;
+  quickScan?: string | null;
+  threats?: { name: string | null; time: string; process: string | null; resources: string[]; resolved: boolean }[];
+}
+
+export interface SecurityReport {
+  at: string;
+  ms: number;
+  scanned: number;
+  files: number;
+  unsigned: number;
+  externalConnections: number;
+  findings: Finding[];
+  startup: StartupItem[];
+  defender: DefenderInfo;
+}
+
+export interface ScanProgress { step: string; pct: number }
+export interface DefenderResult { ok: boolean; clean?: boolean; threat?: string; error?: string; output?: string }
+
+export type TweakId = 'gameMode' | 'noGameDvr' | 'noTransparency' | 'noAnimations' | 'noMouseAccel' | 'noBackgroundApps' | 'longPaths' | 'devMode' | 'hags';
+export type PowerMode = 'efficiency' | 'balanced' | 'performance';
+
+export interface OptimizerState {
+  tweaks: Record<TweakId, { enabled: boolean; supported: boolean }>;
+  meta: Record<TweakId, { title: string; why: string; admin: boolean; restart: string | null }>;
+  power: { mode: PowerMode; activePlan: { guid: string; name: string } | null; hasHighPerfPlan: boolean };
+  git: { installed: boolean; value: boolean };
+  temp: { dir: string; size: number; files: number };
+  battery: boolean;
+  onAc: boolean;
+  startupCount: number;
+  wslRunning: boolean;
+  backedUp: string[];
+}
+
+export type Change = { id: TweakId | 'power' | 'gitLongPaths'; value: boolean | PowerMode };
+export interface ChangeResult { id: string; ok: boolean; error?: string }
+
 export interface DevPulseApi {
   getStatic(): Promise<StaticInfo>;
   getDrives(force?: boolean): Promise<DrivesInfo>;
@@ -95,6 +174,16 @@ export interface DevPulseApi {
   setAlwaysOnTop(on: boolean): Promise<void>;
   systemTheme(): Promise<'dark' | 'light'>;
   relaunchAsAdmin(): Promise<boolean>;
+  securityScan(): Promise<SecurityReport>;
+  defenderScanFile(file: string): Promise<DefenderResult>;
+  defenderQuickScan(): Promise<DefenderResult>;
+  fileHash(file: string): Promise<string | null>;
+  onScanProgress(cb: (p: ScanProgress) => void): () => void;
+  optimizerState(): Promise<OptimizerState>;
+  applyTweaks(changes: Change[]): Promise<ChangeResult[]>;
+  revertTweaks(ids: string[]): Promise<{ ok: boolean; reverted: string[] }>;
+  cleanTemp(): Promise<{ ok: boolean; freed: number; removed: number; skipped: number }>;
+  wslShutdown(): Promise<{ ok: boolean; error?: string }>;
   onTick(cb: (t: Tick) => void): () => void;
   onProcesses(cb: (p: Proc[]) => void): () => void;
   onGpu(cb: (g: GpuSample) => void): () => void;

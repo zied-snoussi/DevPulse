@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Activity, Cpu, Plug, Search, Settings as Cog } from 'lucide-react';
+import { Activity, Cpu, Gauge, Plug, Search, Settings as Cog, ShieldCheck } from 'lucide-react';
 import { useStore, devPorts } from './store';
 import { AdminBadge } from './components/feedback';
 import { CommandPalette } from './components/CommandPalette';
@@ -7,14 +7,18 @@ import Dashboard from './pages/Dashboard';
 import Ports from './pages/Ports';
 import Processes from './pages/Processes';
 import Settings from './pages/Settings';
+import Security from './pages/Security';
+import Optimize from './pages/Optimize';
 import { cx, loadColor, pct } from './lib/format';
 
-export type Page = 'dashboard' | 'ports' | 'processes' | 'settings';
+export type Page = 'dashboard' | 'ports' | 'processes' | 'security' | 'optimize' | 'settings';
 
 const NAV: { id: Page; label: string; icon: typeof Activity; key: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: Activity, key: '1' },
   { id: 'ports', label: 'Ports', icon: Plug, key: '2' },
   { id: 'processes', label: 'Processes', icon: Cpu, key: '3' },
+  { id: 'security', label: 'Security', icon: ShieldCheck, key: '4' },
+  { id: 'optimize', label: 'Optimize', icon: Gauge, key: '5' },
 ];
 
 export default function App() {
@@ -36,10 +40,12 @@ export default function App() {
       else if (k === '1') go('dashboard');
       else if (k === '2') go('ports');
       else if (k === '3') go('processes');
+      else if (k === '4') go('security');
+      else if (k === '5') go('optimize');
       else if (k === ',') go('settings');
       else if (k === 'f') {
         e.preventDefault();
-        setPage((p) => (p === 'dashboard' || p === 'settings' ? 'ports' : p));
+        setPage((p) => (p === 'ports' || p === 'processes' ? p : 'ports'));
         setFocusSearch((n) => n + 1);
       }
     };
@@ -97,6 +103,8 @@ export default function App() {
         {page === 'dashboard' && <Dashboard go={go} />}
         {page === 'ports' && <Ports focusSearch={focusSearch} />}
         {page === 'processes' && <Processes focusSearch={focusSearch} />}
+        {page === 'security' && <Security />}
+        {page === 'optimize' && <Optimize />}
         {page === 'settings' && <Settings />}
       </main>
 

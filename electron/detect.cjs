@@ -117,8 +117,13 @@ const CRITICAL = new Set([
   'fontdrvhost', 'dwm', 'memory compression', 'secure system', 'svchost', 'msmpeng', 'sgrmbroker',
 ]);
 
-function isCritical(pid, name = '') {
-  return pid <= 4 || CRITICAL.has(String(name).toLowerCase().replace(/\.exe$/, ''));
+const WINDIR = `${(process.env.SystemRoot || 'C:\\Windows').toLowerCase()}\\`;
+
+/** Protected Windows process. A "system" name running from outside C:\Windows is an impostor, not protected. */
+function isCritical(pid, name = '', exePath = null) {
+  if (pid <= 4) return true;
+  if (!CRITICAL.has(String(name).toLowerCase().replace(/\.exe$/, ''))) return false;
+  return !exePath || String(exePath).toLowerCase().startsWith(WINDIR);
 }
 
 module.exports = { detect, projectFromCmd, isCritical, DEV_PORT_HINT };

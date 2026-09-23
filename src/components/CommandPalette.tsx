@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Activity, Cpu, ExternalLink, Plug, Settings as Cog, Skull, Search } from 'lucide-react';
+import { Activity, Cpu, ExternalLink, Gauge, Plug, Settings as Cog, ShieldCheck, Skull, Search } from 'lucide-react';
 import { groupProcesses, useStore } from '../store';
 import { useKill } from './feedback';
 import { cx, bytes, pct } from '../lib/format';
@@ -45,6 +45,8 @@ export function CommandPalette({ onClose, go }: { onClose: () => void; go: (p: P
       ['dashboard', 'Go to Dashboard', <Activity size={16} />],
       ['ports', 'Go to Ports', <Plug size={16} />],
       ['processes', 'Go to Processes', <Cpu size={16} />],
+      ['security', 'Scan for threats (Security)', <ShieldCheck size={16} />],
+      ['optimize', 'Optimize for gaming / development / battery', <Gauge size={16} />],
       ['settings', 'Go to Settings', <Cog size={16} />],
     ];
     for (const [p, label, icon] of pages) if (!t || label.toLowerCase().includes(t)) out.push({ id: `go-${p}`, icon, label, run: () => go(p) });
