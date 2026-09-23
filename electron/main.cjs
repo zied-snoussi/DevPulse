@@ -6,6 +6,7 @@ const sys = require('./collectors.cjs');
 const security = require('./security.cjs');
 const optimizer = require('./optimizer.cjs');
 const { PsHost } = require('./psHost.cjs');
+const updater = require('./updater.cjs');
 
 // Separate PowerShell for on-demand scans/tweaks so they never stall the live metrics.
 const tools = new PsHost('tools');
@@ -177,6 +178,11 @@ ipcMain.handle('sec:defenderFile', (_e, file) => security.defenderScanFile(file)
 ipcMain.handle('sec:quickScan', () => security.defenderQuickScan());
 ipcMain.handle('sec:hash', (_e, file) => security.sha256(tools, file));
 
+ipcMain.handle('update:status', () => updater.getStatus());
+ipcMain.handle('update:check', () => updater.check());
+ipcMain.handle('update:download', () => updater.download());
+ipcMain.handle('app:version', () => app.getVersion());
+
 ipcMain.handle('opt:state', () => optimizer.getState(tools));
 ipcMain.handle('opt:apply', (_e, changes) => optimizer.apply(tools, Array.isArray(changes) ? changes : []));
 ipcMain.handle('opt:revert', (_e, ids) => optimizer.revert(tools, Array.isArray(ids) ? ids : []));
@@ -224,6 +230,14 @@ app.whenReady().then(() => {
   createWindow();
   createTray();
   startSampling();
+  updater.onBeforeInstall(() => {
+    quitting = true;
+    timers.forEach((stop) => stop());
+    sys.shutdown();
+    tools.stop();
+    tray?.destroy();
+  });
+  updater.init((status) => send('update:status', status));
 });
 
 app.on('before-quit', () => {
@@ -231,5 +245,6 @@ app.on('before-quit', () => {
   timers.forEach((stop) => stop());
   sys.shutdown();
   tools.stop();
+  updater.stop();
 });
 app.on('window-all-closed', () => app.quit());

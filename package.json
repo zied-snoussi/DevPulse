@@ -1,7 +1,7 @@
 {
   "name": "devpulse",
   "productName": "DevPulse",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Developer desktop companion: manage ports, kill processes and monitor PC performance.",
   "main": "electron/main.cjs",
   "author": "Zied",
@@ -35,11 +35,24 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+      "allowToChangeInstallationDirectory": true,
+      "include": "build/installer.nsh",
+      "artifactName": "DevPulse-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "DevPulse-${version}-Portable.${ext}"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "zied-snoussi",
+        "repo": "DevPulse-releases",
+        "releaseType": "release"
+      }
+    ]
   },
   "dependencies": {
-    "systeminformation": "^5.33.13"
+    "electron-updater": "^6.8.9"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",

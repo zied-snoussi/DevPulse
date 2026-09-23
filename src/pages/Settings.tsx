@@ -1,12 +1,17 @@
 import { Monitor, Moon, ShieldCheck, ShieldAlert, Sun } from 'lucide-react';
 import { useStore } from '../store';
 import { Card, PageHeader, Segmented } from '../components/ui';
+import { UpdateSettings } from '../components/Update';
 
 export default function Settings() {
   const { settings, setSettings, info } = useStore();
   return (
     <div className="page page-narrow">
       <PageHeader title="Settings" subtitle="Tune DevPulse to your workflow." />
+
+      <Card title="Updates">
+        <UpdateSettings />
+      </Card>
 
       <Card title="Appearance">
         <Row label="Theme" hint="Follow Windows or pick one.">
@@ -72,7 +77,7 @@ export default function Settings() {
         </div>
       </Card>
 
-      <p className="about">DevPulse 1.0 · built for {info?.user || 'you'} on {info?.hostname || 'this PC'}</p>
+      <p className="about">DevPulse · built for {info?.user || 'you'} on {info?.hostname || 'this PC'}</p>
     </div>
   );
 }

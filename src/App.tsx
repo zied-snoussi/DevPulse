@@ -3,6 +3,7 @@ import { Activity, Cpu, Gauge, Plug, Search, Settings as Cog, ShieldCheck } from
 import { useStore, devPorts } from './store';
 import { AdminBadge } from './components/feedback';
 import { CommandPalette } from './components/CommandPalette';
+import { UpdateCard } from './components/Update';
 import Dashboard from './pages/Dashboard';
 import Ports from './pages/Ports';
 import Processes from './pages/Processes';
@@ -87,6 +88,7 @@ export default function App() {
         </nav>
 
         <div className="sidebar-bottom">
+          <UpdateCard />
           <div className="mini-meters">
             <MiniMeter label="CPU" value={cpu} />
             <MiniMeter label="RAM" value={mem} />

@@ -639,3 +639,16 @@ kbd {
 .applied { font-size: 12px; font-weight: 600; color: var(--green); padding: 0 6px; }
 .tag { display: inline-flex; align-items: center; gap: 4px; height: 19px; padding: 0 7px; border-radius: 5px; font-size: 10.5px; font-weight: 600; background: var(--panel-3); color: var(--text-2); }
 .qf-icon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--panel-3); color: var(--text-2); flex-shrink: 0; }
+
+/* ------------------------------------------------------------ update */
+
+.update-card {
+  display: flex; flex-direction: column; gap: 8px; padding: 12px; margin-bottom: 8px; border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: radial-gradient(200px 80px at 0% 0%, rgba(139, 92, 246, .22), transparent 70%), var(--panel);
+  animation: pop .25s cubic-bezier(.2, .8, .2, 1);
+}
+.update-head { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 12.5px; }
+.update-head svg { color: var(--accent); }
+.update-btn { width: 100%; }
+.update-sub { font-size: 11.5px; color: var(--text-3); display: flex; align-items: center; gap: 6px; }

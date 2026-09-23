@@ -159,6 +159,17 @@ export interface OptimizerState {
 export type Change = { id: TweakId | 'power' | 'gitLongPaths'; value: boolean | PowerMode };
 export interface ChangeResult { id: string; ok: boolean; error?: string }
 
+export interface UpdateStatus {
+  state: 'dev' | 'idle' | 'checking' | 'latest' | 'available' | 'downloading' | 'ready' | 'error';
+  version: string;
+  available?: string;
+  notes?: string | null;
+  percent?: number;
+  bytesPerSecond?: number;
+  checkedAt?: string;
+  error?: string;
+}
+
 export interface DevPulseApi {
   getStatic(): Promise<StaticInfo>;
   getDrives(force?: boolean): Promise<DrivesInfo>;
@@ -184,6 +195,11 @@ export interface DevPulseApi {
   revertTweaks(ids: string[]): Promise<{ ok: boolean; reverted: string[] }>;
   cleanTemp(): Promise<{ ok: boolean; freed: number; removed: number; skipped: number }>;
   wslShutdown(): Promise<{ ok: boolean; error?: string }>;
+  appVersion(): Promise<string>;
+  updateStatus(): Promise<UpdateStatus>;
+  checkForUpdate(): Promise<UpdateStatus>;
+  downloadUpdate(): Promise<UpdateStatus>;
+  onUpdateStatus(cb: (s: UpdateStatus) => void): () => void;
   onTick(cb: (t: Tick) => void): () => void;
   onProcesses(cb: (p: Proc[]) => void): () => void;
   onGpu(cb: (g: GpuSample) => void): () => void;
