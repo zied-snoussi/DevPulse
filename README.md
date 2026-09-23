@@ -35,6 +35,19 @@ npm start        # production build + run
 npm run dist     # build a Windows installer + portable exe into release/
 ```
 
+### Releasing an update
+
+Installed copies update themselves from [DevPulse-releases](https://github.com/zied-snoussi/DevPulse-releases). To ship a new version:
+
+1. Bump `"version"` in `package.json` (e.g. `1.2.1`).
+2. Run in PowerShell:
+
+   ```powershell
+   $env:GH_TOKEN = gh auth token; npm run release
+   ```
+
+Every installed DevPulse shows **Update now** within a few hours, or right away via Settings → Check for updates.
+
 Shortcuts: `Ctrl+1…5` switch pages, `Ctrl+F` search, `Ctrl+,` settings.
 
 ## How it works

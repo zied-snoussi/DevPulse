@@ -12,7 +12,8 @@
     "build": "tsc --noEmit && vite build",
     "start": "npm run build && electron .",
     "dist": "npm run build && electron-builder --win",
-    "icon": "electron scripts/make-icon.cjs"
+    "icon": "electron scripts/make-icon.cjs",
+    "release": "npm run build && electron-builder --win --publish always"
   },
   "build": {
     "appId": "com.zied.devpulse",
